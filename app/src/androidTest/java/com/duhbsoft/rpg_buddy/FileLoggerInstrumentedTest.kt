@@ -14,11 +14,19 @@ import org.junit.Assert.*
  * See [testing documentation](http://d.android.com/tools/testing).
  */
 @RunWith(AndroidJUnit4::class)
-class ExampleInstrumentedTest {
+class FileLoggerInstrumentedTest {
     @Test
-    fun useAppContext() {
+    fun useAppContextSanity() {
         // Context of the app under test.
         val appContext = InstrumentationRegistry.getInstrumentation().targetContext
+        assertEquals("com.duhbsoft.rpg_buddy", appContext.packageName)
+    }
+
+    @Test
+    fun writeInfo() {
+        // Context of the app under test.
+        val appContext = InstrumentationRegistry.getInstrumentation().targetContext
+        FileLogger.logError("Test message")
         assertEquals("com.duhbsoft.rpg_buddy", appContext.packageName)
     }
 }
