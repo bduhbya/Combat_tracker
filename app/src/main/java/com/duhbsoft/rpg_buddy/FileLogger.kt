@@ -7,32 +7,57 @@ import java.text.SimpleDateFormat
 import java.util.*
 
 object FileLogger {
+    const val INFO_MESSAGE = "INFO"
+    const val WARNING_MESSAGE = "WARNING"
+    const val ERROR_MESSAGE = "ERROR"
     private const val LOG_DIRECTORY = "Tracing"
     private const val TAG = "FileLogger"
     private const val LOG_FILE_NAME = "rpg_buddy_app_log.txt"
 
+    /**
+     * Returns tracing directory for application
+     *
+     * @param a The first integer. Must be non-null.
+     * @param b The second integer. Must be non-null.
+     * @return Tracing directory for application
+     */
     @JvmStatic
     fun getLogDirectory(): String {
         return "${android.os.Environment.getExternalStorageDirectory().absolutePath}/$LOG_DIRECTORY"
     }
 
-    fun logInfo(message: String) {
-        val logMessage = "[INFO] ${getCurrentTimeStamp()} $message"
-        writeToLogFile(logMessage)
+    fun clearLogs() {
+        val directory = File(getLogDirectory())
+
+        if (directory.exists() && directory.isDirectory) {
+            val files = directory.listFiles()
+
+            if (files != null) {
+                for (file in files) {
+                    if (file.name.endsWith(".txt")) {
+                        file.delete()
+                    }
+                }
+            }
+        }
     }
 
-    fun clearLogs(message: String) {
-        val logMessage = "[INFO] ${getCurrentTimeStamp()} $message"
+    fun getLogFile(): File {
+        return File("${getLogDirectory()}/$LOG_FILE_NAME")
+    }
+
+    fun logInfo(message: String) {
+        val logMessage = "[${INFO_MESSAGE}] ${getCurrentTimeStamp()} $message"
         writeToLogFile(logMessage)
     }
 
     fun logWarning(message: String) {
-        val logMessage = "[WARNING] ${getCurrentTimeStamp()} $message"
+        val logMessage = "[${WARNING_MESSAGE}] ${getCurrentTimeStamp()} $message"
         writeToLogFile(logMessage)
     }
 
     fun logError(message: String) {
-        val logMessage = "[ERROR] ${getCurrentTimeStamp()} $message"
+        val logMessage = "[${ERROR_MESSAGE}] ${getCurrentTimeStamp()} $message"
         writeToLogFile(logMessage)
     }
 

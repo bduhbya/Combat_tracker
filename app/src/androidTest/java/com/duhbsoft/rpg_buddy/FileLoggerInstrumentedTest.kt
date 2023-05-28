@@ -7,6 +7,7 @@ import org.junit.Test
 import org.junit.runner.RunWith
 
 import org.junit.Assert.*
+import org.junit.Before
 
 /**
  * Instrumented test, which will execute on an Android device.
@@ -15,6 +16,24 @@ import org.junit.Assert.*
  */
 @RunWith(AndroidJUnit4::class)
 class FileLoggerInstrumentedTest {
+    @Before
+    fun setup() {
+        FileLogger.clearLogs()
+    }
+
+    private fun checkLogMessageAndType(message: String, type: String): Boolean {
+        val logFile = FileLogger.getLogFile()
+        var found = false
+        logFile.forEachLine { line ->
+            if (line.contains(message) && line.contains(type)) {
+                found = true
+                return@forEachLine  // Return from the lambda expression, breaking the loop
+            }
+        }
+
+        return found
+    }
+    
     @Test
     fun useAppContextSanity() {
         // Context of the app under test.
@@ -27,6 +46,6 @@ class FileLoggerInstrumentedTest {
         // Context of the app under test.
         val appContext = InstrumentationRegistry.getInstrumentation().targetContext
         FileLogger.logError("Test message")
-        assertEquals("com.duhbsoft.rpg_buddy", appContext.packageName)
+        assertTrue(checkLogMessageAndType("Test message", FileLogger.INFO_MESSAGE))
     }
 }
